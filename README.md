@@ -46,11 +46,11 @@ go build cmd/grandmotherapp.go
 ```
 And then:
 ```powershell
-./grandmotherapp testImage 90
+./grandmotherapp test1 90
 ```
 Or just type:
 ```powershell
-go run cmd/grandmotherapp.go testImage 90
+go run cmd/grandmotherapp.go test1 90
 ```
 The image can be rotated for these degrees:
 ```powershell

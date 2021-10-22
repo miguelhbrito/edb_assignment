@@ -52,7 +52,7 @@ Or just type:
 ```powershell
 go run cmd/grandmotherapp.go testImage 90
 ```
-The image can be rotated for with this degres:
+The image can be rotated for these degrees:
 ```powershell
 90, 180, 270, -90, -180, -270 and reverse
 ```

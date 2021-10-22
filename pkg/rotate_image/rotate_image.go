@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func Transpose(matrix [][]string) ([][]string, int, int) {
+func transpose(matrix [][]string) ([][]string, int, int) {
 	cols := len(matrix[0])
 	rows := len(matrix)
 
@@ -25,7 +25,7 @@ func Transpose(matrix [][]string) ([][]string, int, int) {
 	return result, rowsResult, colsResult
 }
 
-func ReverseRows(matrix [][]string) ([][]string, int, int) {
+func reverseRows(matrix [][]string) ([][]string, int, int) {
 	cols := len(matrix[0])
 	rows := len(matrix)
 
@@ -50,18 +50,18 @@ func RotateImage(matrix [][]string, degres string) ([][]string, int, int) {
 
 	switch degres {
 	case "90", "-270":
-		rotatedMatrix, _, _ = Transpose(matrix)
-		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(rotatedMatrix)
+		rotatedMatrix, _, _ = transpose(matrix)
+		rotatedMatrix, rowsRotated, colsRotated = reverseRows(rotatedMatrix)
 	case "180", "-180":
-		rotatedMatrix, _, _ = Transpose(matrix)
-		rotatedMatrix, _, _ = ReverseRows(rotatedMatrix)
-		rotatedMatrix, _, _ = Transpose(rotatedMatrix)
-		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(rotatedMatrix)
+		rotatedMatrix, _, _ = transpose(matrix)
+		rotatedMatrix, _, _ = reverseRows(rotatedMatrix)
+		rotatedMatrix, _, _ = transpose(rotatedMatrix)
+		rotatedMatrix, rowsRotated, colsRotated = reverseRows(rotatedMatrix)
 	case "270", "-90":
-		rotatedMatrix, _, _ = ReverseRows(matrix)
-		rotatedMatrix, rowsRotated, colsRotated = Transpose(rotatedMatrix)
+		rotatedMatrix, _, _ = reverseRows(matrix)
+		rotatedMatrix, rowsRotated, colsRotated = transpose(rotatedMatrix)
 	case "reverse":
-		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(matrix)
+		rotatedMatrix, rowsRotated, colsRotated = reverseRows(matrix)
 	default:
 		fmt.Printf("Please, type the right input to degres, examples:\n" +
 			"90, -90, 180, -180, 270, -270 or reverse")

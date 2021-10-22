@@ -16,7 +16,7 @@ func main() {
 	if len(os.Args) != 3 {
 		fmt.Println("Invalid paramenter," +
 			" please type the file name and degres you desire to rotate, example:\n" +
-			"appName fileName 90")
+			"grandmotherapp fileName 90")
 		return
 	} else {
 		arg1 = os.Args[1]
@@ -27,7 +27,6 @@ func main() {
 
 	matrix, err := utils.ReadFile(arg1)
 	if err != nil {
-		fmt.Printf("Error reading file")
 		return
 	}
 
@@ -38,5 +37,5 @@ func main() {
 		return
 	}
 
-	fmt.Println("Success ! Your file is done !")
+	fmt.Println("File successfully generated !")
 }

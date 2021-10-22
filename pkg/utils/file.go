@@ -19,7 +19,7 @@ func ReadFile(fName string) ([][]string, error) {
 
 	data := make([][]string, 0)
 	reader := bufio.NewReader(file)
-	stringLine, err := Readln(reader)
+	stringLine, err := readln(reader)
 	for err == nil {
 		if strings.Contains(string(stringLine[0]), "#") {
 			fmt.Printf(stringLine)
@@ -27,12 +27,12 @@ func ReadFile(fName string) ([][]string, error) {
 			splitData := strings.Split(stringLine, " ")
 			data = append(data, splitData)
 		}
-		stringLine, err = Readln(reader)
+		stringLine, err = readln(reader)
 	}
 
 	PBMFormatFile := data[0][0]
 	if PBMFormat != PBMFormatFile {
-		fmt.Printf("PBM file is different thand P1 type. Please try again with right file.")
+		fmt.Printf("PBM file is different than P1 type. Please try again with right file.")
 		return nil, err
 	}
 
@@ -74,7 +74,7 @@ func WriteOnFile(fileName string, matrix [][]string, rows, cols int) error {
 	return nil
 }
 
-func Readln(reader *bufio.Reader) (string, error) {
+func readln(reader *bufio.Reader) (string, error) {
 	var (
 		isPrefix bool  = true
 		err      error = nil

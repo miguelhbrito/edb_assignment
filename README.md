@@ -9,9 +9,10 @@ PBM is an image format that can be represented in ascii and is easily manipulate
 
 an example pbm file could look like this
 
+```powershell
 P1
 
-## This is an example bitmap of the letter "J"
+#This is an example bitmap of the letter "J"
 
 6 10
 
@@ -34,7 +35,7 @@ P1
 0 0 0 0 0 0
 
 0 0 0 0 0 0
-
+```
  
 
 We can assume that Grandmother's phone uses pbm files with the magic number P1 only. Alas, grandmother's phone doesn't always generate square images, it can create rectangular images as well.

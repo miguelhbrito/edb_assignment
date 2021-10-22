@@ -7,6 +7,41 @@ import (
 	"strings"
 )
 
+const PBMFormat = "P1"
+
+func WriteOnFile(fileName string, matrix [][]string, rows, cols int) error {
+	fileNameWrite := fmt.Sprintf("%s.pbm", fileName)
+	fwrite, err := os.Create(fileNameWrite)
+	if err != nil {
+		fmt.Printf("Error to create response file: %v\nPlease try again.", err)
+		return err
+	}
+	defer fwrite.Close()
+
+	var dataReponse string
+	var dataReponseLine string
+	dataReponse += (PBMFormat + "\n")
+	dataReponseLine += fmt.Sprintf("%d %d", cols, rows)
+	dataReponse += (dataReponseLine + "\n")
+
+	for _, v := range matrix {
+		dataReponseLine = strings.Join(v, " ")
+		dataReponse += (dataReponseLine + "\n")
+	}
+
+	dataValue := fmt.Sprintf("%v", dataReponse)
+	dataResult := []byte(dataValue)
+
+	_, err = fwrite.Write(dataResult)
+
+	if err != nil {
+		fmt.Printf("Error to write data to the file: %v\nPlease try again.", err)
+		return err
+	}
+
+	return nil
+}
+
 func Transpose(matrix [][]string) ([][]string, int, int) {
 	cols := len(matrix[0])
 	rows := len(matrix)
@@ -46,40 +81,39 @@ func ReverseRows(matrix [][]string) ([][]string, int, int) {
 	return result, rows, cols
 }
 
-func Readln(r *bufio.Reader) (string, error) {
-	var (
-		isPrefix bool  = true
-		err      error = nil
-		line, ln []byte
-	)
-	for isPrefix && err == nil {
-		line, isPrefix, err = r.ReadLine()
-		ln = append(ln, line...)
+func RotateImage(matrix [][]string, degres string) ([][]string, int, int) {
+	var rotatedMatrix [][]string
+	var rowsRotated int
+	var colsRotated int
+
+	switch degres {
+	case "90", "-270":
+		rotatedMatrix, _, _ = Transpose(matrix)
+		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(rotatedMatrix)
+	case "180", "-180":
+		rotatedMatrix, _, _ = Transpose(matrix)
+		rotatedMatrix, _, _ = ReverseRows(rotatedMatrix)
+		rotatedMatrix, _, _ = Transpose(rotatedMatrix)
+		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(rotatedMatrix)
+	case "270", "-90":
+		rotatedMatrix, _, _ = ReverseRows(matrix)
+		rotatedMatrix, rowsRotated, colsRotated = Transpose(rotatedMatrix)
+	case "reverse":
+		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(matrix)
+	default:
+		fmt.Printf("Please, type the right input to degres, examples:\n" +
+			"90, -90, 180, -180, 270, -270 or reverse")
 	}
-	return string(ln), err
+
+	return rotatedMatrix, rowsRotated, colsRotated
 }
 
-func main() {
-	if os.Args[1] == "" {
-		fmt.Println("Invalid paramenter, argument 1 is empty")
-		os.Exit(2)
-	}
-
-	if os.Args[2] == "" {
-		fmt.Println("Invalid paramenter, argument 2 is empty")
-		os.Exit(2)
-	}
-
-	arg1 := os.Args[1]
-	arg2 := os.Args[2]
-
-	fmt.Println("Reading file " + arg1 + ".pbm, to rotate image file with " + arg2 + " degres")
-
-	fileName := fmt.Sprintf("%s.pbm", arg1)
+func ReadFile(fName string) ([][]string, error) {
+	fileName := fmt.Sprintf("%s.pbm", fName)
 	file, err := os.Open(fileName)
 	if err != nil {
-		fmt.Printf("Error opening file: %v\n", err)
-		os.Exit(1)
+		fmt.Printf("Error opening file: %v\nPlease enter the right file name.", err)
+		return nil, err
 	}
 
 	data := make([][]string, 0)
@@ -95,58 +129,59 @@ func main() {
 		stringLine, err = Readln(reader)
 	}
 
-	PBMFormat := data[0][0]
-	MatrixParams := data[1]
-	fmt.Println(MatrixParams)
+	PBMFormatFile := data[0][0]
+	if PBMFormat != PBMFormatFile {
+		fmt.Printf("PBM file is different thand P1 type. Please try again with right file.")
+		return nil, err
+	}
 
 	matrix := data[2:]
 
-	var rotatedMatrix [][]string
-	var rowsRotated int
-	var colsRotated int
+	return matrix, nil
+}
 
-	if arg2 == "90" || arg2 == "-270" {
-		rotatedMatrix, _, _ = Transpose(matrix)
-		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(rotatedMatrix)
+func Readln(reader *bufio.Reader) (string, error) {
+	var (
+		isPrefix bool  = true
+		err      error = nil
+		line, ln []byte
+	)
+	for isPrefix && err == nil {
+		line, isPrefix, err = reader.ReadLine()
+		ln = append(ln, line...)
+	}
+	return string(ln), err
+}
+
+func main() {
+
+	var arg1 string
+	var arg2 string
+
+	if len(os.Args) != 3 {
+		fmt.Println("Invalid paramenter," +
+			" please type the file name and degres you desire to rotate, example:\n" +
+			"appName fileName 90")
+		return
+	} else {
+		arg1 = os.Args[1]
+		arg2 = os.Args[2]
 	}
 
-	if arg2 == "180" || arg2 == "-180" {
-		rotatedMatrix, _, _ = Transpose(matrix)
-		rotatedMatrix, _, _ = ReverseRows(rotatedMatrix)
-		rotatedMatrix, _, _ = Transpose(rotatedMatrix)
-		rotatedMatrix, rowsRotated, colsRotated = ReverseRows(rotatedMatrix)
-	}
+	fmt.Println("Reading file " + arg1 + ".pbm, to rotate image file with " + arg2 + " degres")
 
-	if arg2 == "270" || arg2 == "-90" {
-		rotatedMatrix, _, _ = ReverseRows(matrix)
-		rotatedMatrix, rowsRotated, colsRotated = Transpose(rotatedMatrix)
-	}
-
-	fileNameWrite := fmt.Sprintf("%sRotated.pbm", arg1)
-	fwrite, err := os.Create(fileNameWrite)
+	matrix, err := ReadFile(arg1)
 	if err != nil {
-		os.Exit(1)
+		fmt.Printf("Error reading file")
+		return
 	}
 
-	defer fwrite.Close()
+	rotatedMatrix, rowsRotated, colsRotated := RotateImage(matrix, arg2)
 
-	var dataWrite string
-	var dataWriteLine string
-	dataWrite += (PBMFormat + "\n")
-	dataWriteLine += fmt.Sprintf("%d %d", colsRotated, rowsRotated)
-	dataWrite += (dataWriteLine + "\n")
-
-	for _, v := range rotatedMatrix {
-		dataWriteLine = strings.Join(v, " ")
-		dataWrite += (dataWriteLine + "\n")
+	err = WriteOnFile(arg1, rotatedMatrix, rowsRotated, colsRotated)
+	if err != nil {
+		return
 	}
 
-	val := fmt.Sprintf("%v", dataWrite)
-	toWrite := []byte(val)
-
-	_, err2 := fwrite.Write(toWrite)
-
-	if err2 != nil {
-		os.Exit(1)
-	}
+	fmt.Println("Success ! Your file is done !")
 }

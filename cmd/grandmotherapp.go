@@ -30,7 +30,13 @@ func main() {
 		return
 	}
 
-	rotatedMatrix, rowsRotated, colsRotated := rotateimage.RotateImage(matrix, arg2)
+	degrees := rotateimage.Degrees(arg2)
+	if !degrees.IsDegrees() {
+		fmt.Println("The input is not a degree type !")
+		return
+	}
+
+	rotatedMatrix, rowsRotated, colsRotated := matrix.RotateImage(matrix, degrees)
 
 	err = utils.WriteOnFile(arg1, rotatedMatrix, rowsRotated, colsRotated)
 	if err != nil {

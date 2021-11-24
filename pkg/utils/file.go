@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	rotateimage "github.com/edb_test/pkg/rotate_image"
 )
 
 const PBMFormat = "P1"
 
-func ReadFile(fName string) ([][]string, error) {
+func ReadFile(fName string) (rotateimage.Image, error) {
 	fileName := fmt.Sprintf("%s.pbm", fName)
 	file, err := os.Open(fileName)
 	if err != nil {
@@ -17,7 +19,7 @@ func ReadFile(fName string) ([][]string, error) {
 		return nil, err
 	}
 
-	data := make([][]string, 0)
+	data := make(rotateimage.Image, 0)
 	reader := bufio.NewReader(file)
 	stringLine, err := readln(reader)
 	for err == nil {
@@ -41,7 +43,7 @@ func ReadFile(fName string) ([][]string, error) {
 	return matrix, nil
 }
 
-func WriteOnFile(fileName string, matrix [][]string, rows, cols int) error {
+func WriteOnFile(fileName string, matrix rotateimage.Image, rows, cols int) error {
 	fileNameWrite := fmt.Sprintf("%s.pbm", fileName)
 	fwrite, err := os.Create(fileNameWrite)
 	if err != nil {

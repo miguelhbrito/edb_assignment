@@ -1,9 +1,5 @@
 package rotateimage
 
-import (
-	"fmt"
-)
-
 type (
 	Image   [][]string
 	Degrees string
@@ -86,8 +82,6 @@ func (i Image) RotateImage(matrix Image, degres Degrees) (Image, int, int) {
 	case "reverse":
 		rotatedMatrix, rowsRotated, colsRotated = matrix.reverseRows(matrix)
 	default:
-		fmt.Printf("Please, type the right input to degres, examples:\n" +
-			"90, -90, 180, -180, 270, -270 or reverse")
 	}
 
 	return rotatedMatrix, rowsRotated, colsRotated

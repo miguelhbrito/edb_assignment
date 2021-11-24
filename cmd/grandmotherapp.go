@@ -32,7 +32,8 @@ func main() {
 
 	degrees := rotateimage.Degrees(arg2)
 	if !degrees.IsDegrees() {
-		fmt.Println("The input is not a degree type !")
+		fmt.Printf("Please, type the right input to degres, examples:\n" +
+			"90, -90, 180, -180, 270, -270 or reverse")
 		return
 	}
 
